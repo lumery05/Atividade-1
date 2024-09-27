@@ -1,0 +1,17 @@
+# Caso não tenha a conta no GitHub Crie uma
+# Crie um repositorio e siga os passos abaixo
+
+# Inicializar um repositório Git
+git init
+
+# Adicionar todos os arquivos
+git add .
+
+# Fazer o primeiro commit
+git commit -m "Commit inicial"
+
+# Adicionar o repositório remoto (substitua USER e REPO pelos seus dados)
+git remote add origin https://github.com/USER/REPO.git
+
+# Enviar os arquivos para o GitHub
+git push -u origin master
