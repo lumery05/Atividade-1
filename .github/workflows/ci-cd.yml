@@ -2,9 +2,9 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   build:
@@ -55,7 +55,7 @@ jobs:
   deploy:
     needs: [build, test, hello_world]
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     
     steps:
     - uses: actions/checkout@v3
@@ -72,7 +72,7 @@ jobs:
         git config --global user.name "lumery05"
         git config --global user.email "lumery.lm@gmail.com"
         git checkout -b deploy-branch  # Cria uma nova branch chamada 'deploy-branch'
-        git merge master  # Mescla a branch 'master' para a branch 'deploy-branch'
+        git merge main  # Mescla a branch 'main' para a branch 'deploy-branch'
         git push origin deploy-branch  # Faz push da branch 'deploy-branch' para o repositório
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Usa o token automático gerado pelo GitHub Actions
