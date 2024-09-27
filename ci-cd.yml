@@ -1,0 +1,78 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Build application
+      run: |
+        echo "Building the application..."
+        # Adicione aqui quaisquer comandos necessários para build
+        
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Run tests
+      run: |
+        python -m unittest discover tests
+        
+  hello_world:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Create and run Hello World script
+      run: |
+        echo 'print("Hello, World!")' > hello_world.py
+        python hello_world.py
+        
+  deploy:
+    needs: [build, test, hello_world]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Deploy to GitHub
+      run: |
+        git config --global user.name "lumery05"
+        git config --global user.email "lumery.lm@gmail.com"
+        git checkout -b deploy-branch  # Cria uma nova branch chamada 'deploy-branch'
+        git merge master  # Mescla a branch 'master' para a branch 'deploy-branch'
+        git push origin deploy-branch  # Faz push da branch 'deploy-branch' para o repositório
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Usa o token automático gerado pelo GitHub Actions
